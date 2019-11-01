@@ -6,6 +6,6 @@ layout: default
 # tNet: Transport Networks
 
 
-<hr>
 
-Héctor M. Sánchez C.
+
+Author: Héctor M. Sánchez C.
