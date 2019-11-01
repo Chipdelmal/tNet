@@ -3,6 +3,7 @@ import matplotlib.colors as colors
 import networkx as nx
 import osmnx as ox
 import pandas as pd
+%matplotlib inline
 
 ox.config(log_console=True, use_cache=True)
 ox.__version__
