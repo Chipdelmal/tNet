@@ -1,6 +1,6 @@
 # Anaconda Environment
 
-To insntall the [anaconda environment](https://www.anaconda.com/distribution/) run either:
+To install the [anaconda environment](https://www.anaconda.com/distribution/) run either:
 
 ```bash
 conda env create -f tNet.yml
