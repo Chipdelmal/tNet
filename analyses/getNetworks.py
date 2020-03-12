@@ -6,6 +6,7 @@ import style as sty
 import pandas as pd
 import pickle as pkl
 import networkx as nx
+import functions as fun
 
 ###############################################################################
 # Setup and check OSMNX
@@ -14,7 +15,7 @@ ox.config(log_console=True, use_cache=True)
 ox.__version__
 
 (PLACE, netType, EXPORT) = (
-        'Berkeley, California, USA', 'drive', True
+        'Berkeley, California, USA', 'walk', True
     )
 idStr = ''.join([i[:3].strip() for i in PLACE.split(',')])
 ###############################################################################
@@ -39,10 +40,13 @@ if EXPORT:
         edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
-    fig.savefig('./img/{}-{}-O.pdf'.format(idStr, netType))
+    fig.savefig(
+            './img/{}-{}-O.pdf'.format(idStr, netType),
+            bbox_inches='tight', pad_inches=.01
+        )
 
 ###############################################################################
-# Get metrics
+# Closeness Centrality
 ###############################################################################
 node_centrality = nx.closeness_centrality(G)
 df = pd.DataFrame(
@@ -53,17 +57,20 @@ df = pd.DataFrame(
 ###############################################################################
 # Plot the network with metrics
 ###############################################################################
-df['colors'] = ox.get_colors(n=len(df), cmap='inferno', start=0.2)
+df['colors'] = ox.get_colors(n=len(df), cmap='bwr', start=0.2)
 df = df.reindex(G.nodes())
 nc = df['colors'].tolist()
 (fig, ax) = ox.plot_graph(
         G,
         bgcolor=sty.BKG,
-        node_size=sty.NS, node_color=nc, node_zorder=sty.NZ,
-        edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
+        node_size=sty.NS*3, node_color=nc, node_zorder=sty.NZ,
+        edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
-    fig.savefig('./img/{}-{}-C.pdf'.format(idStr, netType))
+    fig.savefig(
+            './img/{}-{}-C.pdf'.format(idStr, netType),
+            bbox_inches='tight', pad_inches=.01
+        )
 
 ###############################################################################
 # Network stats
@@ -79,13 +86,20 @@ if EXPORT:
     pkl.dump(stats, file)
     file.close()
 
-
-nc = get_node_colors_by_stat(G, data=extended_stats['betweenness_centrality'])
+###############################################################################
+# Betwenness Centrality
+###############################################################################
+nc = fun.get_node_colors_by_stat(
+        G, data=extended_stats['betweenness_centrality']
+    )
 (fig, ax) = ox.plot_graph(
         G,
         bgcolor=sty.BKG,
-        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
+        node_size=sty.NS*3, node_color=nc, node_zorder=sty.NZ,
         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
-    fig.savefig('./img/{}-{}-B.pdf'.format(idStr, netType))
+    fig.savefig(
+            './img/{}-{}-B.pdf'.format(idStr, netType),
+            bbox_inches='tight', pad_inches=.01
+        )
