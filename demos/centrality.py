@@ -1,9 +1,9 @@
-import matplotlib.cm as cm
-import matplotlib.colors as colors
-import networkx as nx
+
 import osmnx as ox
 import pandas as pd
-%matplotlib inline
+import networkx as nx
+import matplotlib.cm as cm
+import matplotlib.colors as colors
 
 ox.config(log_console=True, use_cache=True)
 ox.__version__
