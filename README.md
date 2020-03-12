@@ -1,6 +1,6 @@
 # tNet: Transport Networks
 
-UNDER DEVELOPMENT
+** UNDER DEVELOPMENT **
 
 ##  Folders and Files
 
@@ -9,9 +9,8 @@ UNDER DEVELOPMENT
 * [demos](./demos/): Brief snippets of code used to test capabilities and ideas (most based on variations of [osmnx's documentation](https://github.com/gboeing/osmnx)).
 * [docs](./docs/): Markdown files for the [gh-pages](https://chipdelmal.github.io/tNet/) of the project.
 
-<hr>
 
-Author
+##  Author
 
 [Héctor M. Sánchez C.](https://chipdelmal.github.io/)
 
