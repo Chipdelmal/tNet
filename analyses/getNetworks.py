@@ -15,7 +15,7 @@ ox.config(log_console=True, use_cache=True)
 ox.__version__
 
 (PLACE, netType, EXPORT) = (
-        'Berkeley, California, USA', 'walk', True
+        'Berkeley, California, USA', 'drive', True
     )
 idStr = ''.join([i[:3].strip() for i in PLACE.split(',')])
 ###############################################################################
