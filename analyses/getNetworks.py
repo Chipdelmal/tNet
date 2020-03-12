@@ -15,7 +15,7 @@ ox.config(log_console=True, use_cache=True)
 ox.__version__
 
 (PLACE, netType, EXPORT) = (
-        'Berkeley, California, USA', 'drive', True
+        'Berkeley, California, USA', 'all', True
     )
 idStr = ''.join([i[:3].strip() for i in PLACE.split(',')])
 ###############################################################################
@@ -63,7 +63,7 @@ nc = df['colors'].tolist()
 (fig, ax) = ox.plot_graph(
         G,
         bgcolor=sty.BKG,
-        node_size=sty.NS*3, node_color=nc, node_zorder=sty.NZ,
+        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
@@ -95,7 +95,7 @@ nc = fun.get_node_colors_by_stat(
 (fig, ax) = ox.plot_graph(
         G,
         bgcolor=sty.BKG,
-        node_size=sty.NS*3, node_color=nc, node_zorder=sty.NZ,
+        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
