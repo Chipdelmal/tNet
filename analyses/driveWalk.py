@@ -50,8 +50,9 @@ nc = df['colors'].tolist()
 ###############################################################################
 (fig, ax) = ox.plot_graph(
         G,
-        bgcolor='k', node_size=30, node_color=nc, node_edgecolor='none',
-        node_zorder=2, edge_color='#555555', edge_linewidth=1.5, edge_alpha=.75
+        bgcolor='k', node_size=30, node_color='#999999',
+        node_edgecolor='none', node_zorder=2,
+        edge_color='#555555', edge_linewidth=1.5, edge_alpha=1
     )
 
 ###############################################################################
