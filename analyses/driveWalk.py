@@ -12,6 +12,7 @@ ox.config(log_console=True, use_cache=True)
 ox.__version__
 
 (place, netType) = ('Emeryville, California, USA', 'drive_service')
+idStr = [i[:3].strip() for i in place.split(',')]
 ###############################################################################
 # Get Network and Projections
 ###############################################################################
@@ -47,12 +48,15 @@ nc = df['colors'].tolist()
 ###############################################################################
 # Plot the network with metrics
 ###############################################################################
-fig, ax = ox.plot_graph(
+(fig, ax) = ox.plot_graph(
         G,
         bgcolor='k', node_size=30, node_color=nc, node_edgecolor='none',
         node_zorder=2, edge_color='#555555', edge_linewidth=1.5, edge_alpha=.75
     )
 
+###############################################################################
+# Network stats
+###############################################################################
 stats = ox.basic_stats(G, area=area)
 extended_stats = ox.extended_stats(G, ecc=True, bc=True, cc=True)
 for key, value in extended_stats.items():
