@@ -14,10 +14,10 @@ import functions as fun
 ox.config(log_console=True, use_cache=True)
 ox.__version__
 
-(PLACE, netType, EXPORT) = (
-        'Berkeley, California, USA', 'all', True
+(PLACE, netType, EXPORT, FMT) = (
+        'Santa Clara, California, USA', 'drive', True, 'pdf'
     )
-idStr = ''.join([i[:3].strip() for i in PLACE.split(',')])
+idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
 ###############################################################################
 # Get Network and Projections
 ###############################################################################
@@ -34,43 +34,43 @@ if EXPORT:
 # Plot the original network
 ###############################################################################
 (fig, ax) = ox.plot_graph(
-        G,
+        G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS, node_color=sty.NC, node_zorder=sty.NZ,
+        node_size=sty.NS*.5, node_color=sty.NC, node_zorder=sty.NZ,
         edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
     fig.savefig(
-            './img/{}-{}-O.pdf'.format(idStr, netType),
+            './img/{}-{}-O.{}'.format(idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
 
 ###############################################################################
 # Closeness Centrality
 ###############################################################################
-node_centrality = nx.closeness_centrality(G)
-df = pd.DataFrame(
-        data=pd.Series(node_centrality).sort_values(),
-        columns=['cc']
-    )
-
-###############################################################################
-# Plot the network with metrics
-###############################################################################
-df['colors'] = ox.get_colors(n=len(df), cmap='bwr', start=0.2)
-df = df.reindex(G.nodes())
-nc = df['colors'].tolist()
-(fig, ax) = ox.plot_graph(
-        G,
-        bgcolor=sty.BKG,
-        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
-        edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
-    )
-if EXPORT:
-    fig.savefig(
-            './img/{}-{}-C.pdf'.format(idStr, netType),
-            bbox_inches='tight', pad_inches=.01
-        )
+# node_centrality = nx.closeness_centrality(G)
+# df = pd.DataFrame(
+#         data=pd.Series(node_centrality).sort_values(),
+#         columns=['cc']
+#     )
+#
+# #############################################################################
+# # Plot the network with metrics
+# #############################################################################
+# df['colors'] = ox.get_colors(n=len(df), cmap='bwr', start=0.2)
+# df = df.reindex(G.nodes())
+# nc = df['colors'].tolist()
+# (fig, ax) = ox.plot_graph(
+#         G, show=False,
+#         bgcolor=sty.BKG,
+#         node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
+#         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
+#     )
+# if EXPORT:
+#     fig.savefig(
+#             './img/{}-{}-C.{}'.format(idStr, netType, FMT),
+#             bbox_inches='tight', pad_inches=.01
+#         )
 
 ###############################################################################
 # Network stats
@@ -93,13 +93,13 @@ nc = fun.get_node_colors_by_stat(
         G, data=extended_stats['betweenness_centrality']
     )
 (fig, ax) = ox.plot_graph(
-        G,
+        G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
+        node_size=sty.NS*.5, node_color=nc, node_zorder=sty.NZ,
         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
     fig.savefig(
-            './img/{}-{}-B.pdf'.format(idStr, netType),
+            './img/{}-{}-B.{}'.format(idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )

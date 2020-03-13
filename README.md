@@ -14,4 +14,5 @@
 <img src="./docs/media/pusheen.jpg" height="100px" align="middle"><br>
 
 [Héctor M. Sánchez C.](https://chipdelmal.github.io/)
+
 [[website](https://chipdelmal.github.io/) : : [blog](https://chipdelmal.github.io/blog/)]
