@@ -2,6 +2,8 @@
 
 *UNDER DEVELOPMENT*
 
+<img src="./docs/media/SanCaUS-drive-B.jpg" height="100%" align="middle"><br>
+
 ##  Folders and Files
 
 * [conda](./conda/): Anaconda environment with needed dependencies to run the code.
