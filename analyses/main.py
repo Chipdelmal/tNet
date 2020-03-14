@@ -18,37 +18,14 @@ print('OSMNXv{}'.format(ox.__version__))
 
 n = 30
 (PLACE, netType, EXPORT, FMT, PTH_BASE) = (
-        'Orinda, California, USA', 'drive', True,
+        'Seattle, Washington, USA', 'drive', True,
         stp.FMT, stp.PTH_BASE
     )
 idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
 ###############################################################################
-# Get Network and Projections
+# Get Network
 ###############################################################################
 G = ox.graph_from_place(PLACE, netType)
-G = ox.project_graph(G)
-gdf = ox.gdf_from_place(PLACE)
-area = ox.project_gdf(gdf).unary_union.area
-if EXPORT:
-    file = open('{}/dta/{}-{}-G.pickle'.format(PTH_BASE, idStr, netType), 'wb')
-    pkl.dump(G, file)
-    file.close()
-
-###############################################################################
-# Plot the original network
-###############################################################################
-(fig, ax) = ox.plot_graph(
-        G, show=False,
-        bgcolor=sty.BKG,
-        node_size=sty.NS*10, node_color=sty.NC,
-        node_zorder=sty.NZ, node_alpha=.35,
-        edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
-    )
-if EXPORT:
-    fig.savefig(
-            '{}/img/{}-{}-O.{}'.format(PTH_BASE, idStr, netType, FMT),
-            bbox_inches='tight', pad_inches=.01
-        )
 
 ###############################################################################
 # Bearings
@@ -58,7 +35,6 @@ bearings = pd.Series([
         data['bearing'] for u, v, k, data in G.edges(keys=True, data=True)
     ])
 
-
 (count, division) = np.histogram(
         bearings,
         bins=[ang*360/n for ang in range(0, n+1)]
@@ -66,19 +42,45 @@ bearings = pd.Series([
 (division, width) = (division[0:-1], 2*np.pi/n)
 (fig, ax) = plt.subplots()
 ax = plt.subplot(111, projection='polar')
-ax.grid(alpha=.25)
-ax.spines['polar'].set_visible(False)
+ax.grid(alpha=.25, lw=.5)
+# ax.spines['polar'].set_visible(False)
 ax.set_theta_zero_location('N')
 ax.set_theta_direction('clockwise')
+plt.xticks([0, np.pi/2, np.pi, 3*np.pi/2])
+plt.yticks(np.arange(0, 1, .2))
+ax.set_xticklabels(['N', 'E', 'S', 'W'])
 ax.set_yticklabels([])
-plt.yticks(np.arange(0, 1000, 100))
+plt.tick_params(labelsize=25)
 bars = ax.bar(
-        division * np.pi/180 - width * 0.5, count,
+        division * np.pi/180 - width * 0.5, count/np.max(count),
         width=width, bottom=0., ec='k', lw=1, fc=sty.NC
     )
 if EXPORT:
     fig.savefig(
             '{}/img/{}-{}-D.{}'.format(PTH_BASE, idStr, netType, FMT),
+            bbox_inches='tight', pad_inches=.01
+        )
+
+###############################################################################
+# Plot the original network
+###############################################################################
+G = ox.project_graph(G)
+gdf = ox.gdf_from_place(PLACE)
+area = ox.project_gdf(gdf).unary_union.area
+if EXPORT:
+    file = open('{}/dta/{}-{}-G.pickle'.format(PTH_BASE, idStr, netType), 'wb')
+    pkl.dump(G, file)
+    file.close()
+(fig, ax) = ox.plot_graph(
+        G, show=False,
+        bgcolor=sty.BKG,
+        node_size=sty.NS*5, node_color=sty.NC,
+        node_zorder=sty.NZ, node_alpha=.35,
+        edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
+    )
+if EXPORT:
+    fig.savefig(
+            '{}/img/{}-{}-O.{}'.format(PTH_BASE, idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
 
@@ -106,7 +108,7 @@ nc = fun.get_node_colors_by_stat(
 (fig, ax) = ox.plot_graph(
         G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*10, node_color=nc, node_zorder=sty.NZ, node_alpha=.35,
+        node_size=sty.NS*5, node_color=nc, node_zorder=sty.NZ, node_alpha=.35,
         edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
