@@ -3,6 +3,7 @@
 
 import numpy as np
 import osmnx as ox
+import setup as stp
 import style as sty
 import pandas as pd
 import pickle as pkl
@@ -17,8 +18,9 @@ ox.config(log_console=True, use_cache=True)
 print('OSMNXv{}'.format(ox.__version__))
 
 n = 30
-(PLACE, netType, EXPORT, FMT) = (
-        'Bellevue, Washington, USA', 'drive', True, 'pdf'
+(PLACE, netType, EXPORT, FMT, PTH_BASE) = (
+        'San Francisco, California, USA', 'drive', True,
+        stp.FMT, stp.PTH_BASE
     )
 idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
 ###############################################################################
@@ -29,7 +31,7 @@ G = ox.project_graph(G)
 gdf = ox.gdf_from_place(PLACE)
 area = ox.project_gdf(gdf).unary_union.area
 if EXPORT:
-    file = open('./dta/{}-{}-G.pickle'.format(idStr, netType), 'wb')
+    file = open('{}/dta/{}-{}-G.pickle'.format(PTH_BASE, idStr, netType), 'wb')
     pkl.dump(G, file)
     file.close()
 
@@ -44,7 +46,7 @@ if EXPORT:
     )
 if EXPORT:
     fig.savefig(
-            './img/{}-{}-O.{}'.format(idStr, netType, FMT),
+            '{}/img/{}-{}-O.{}'.format(PTH_BASE, idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
 
@@ -72,36 +74,9 @@ bars = ax.bar(
     )
 if EXPORT:
     fig.savefig(
-            './img/{}-{}-D.{}'.format(idStr, netType, FMT),
+            '{}/img/{}-{}-D.{}'.format(PTH_BASE, idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
-
-###############################################################################
-# Closeness Centrality
-###############################################################################
-# node_centrality = nx.closeness_centrality(G)
-# df = pd.DataFrame(
-#         data=pd.Series(node_centrality).sort_values(),
-#         columns=['cc']
-#     )
-#
-# #############################################################################
-# # Plot the network with metrics
-# #############################################################################
-# df['colors'] = ox.get_colors(n=len(df), cmap='bwr', start=0.2)
-# df = df.reindex(G.nodes())
-# nc = df['colors'].tolist()
-# (fig, ax) = ox.plot_graph(
-#         G, show=False,
-#         bgcolor=sty.BKG,
-#         node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
-#         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
-#     )
-# if EXPORT:
-#     fig.savefig(
-#             './img/{}-{}-C.{}'.format(idStr, netType, FMT),
-#             bbox_inches='tight', pad_inches=.01
-#         )
 
 ###############################################################################
 # Network stats
@@ -112,8 +87,9 @@ for key, value in extended_stats.items():
     stats[key] = value
 
 if EXPORT:
-    pd.Series(stats).to_csv('./dta/{}-{}-S.csv'.format(idStr, netType))
-    file = open('./dta/{}-{}-S.pickle'.format(idStr, netType), 'wb')
+    statSeries = pd.Series(stats)
+    statSeries.to_csv('{}/dta/{}-{}-S.csv'.format(PTH_BASE, idStr, netType))
+    file = open('{}/dta/{}-{}-S.pickle'.format(PTH_BASE, idStr, netType), 'wb')
     pkl.dump(stats, file)
     file.close()
 
@@ -131,6 +107,6 @@ nc = fun.get_node_colors_by_stat(
     )
 if EXPORT:
     fig.savefig(
-            './img/{}-{}-B.{}'.format(idStr, netType, FMT),
+            '{}/img/{}-{}-B.{}'.format(PTH_BASE, idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
