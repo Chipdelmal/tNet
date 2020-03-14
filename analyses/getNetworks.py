@@ -1,21 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import numpy as np
 import osmnx as ox
 import style as sty
 import pandas as pd
 import pickle as pkl
 import networkx as nx
 import functions as fun
+import matplotlib.pyplot as plt
 
 ###############################################################################
 # Setup and check OSMNX
 ###############################################################################
 ox.config(log_console=True, use_cache=True)
-ox.__version__
+print('OSMNXv{}'.format(ox.__version__))
 
+n = 30
 (PLACE, netType, EXPORT, FMT) = (
-        'Santa Clara, California, USA', 'drive', True, 'pdf'
+        'Bellevue, Washington, USA', 'drive', True, 'pdf'
     )
 idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
 ###############################################################################
@@ -36,12 +39,40 @@ if EXPORT:
 (fig, ax) = ox.plot_graph(
         G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*.5, node_color=sty.NC, node_zorder=sty.NZ,
+        node_size=sty.NS*2, node_color=sty.NC, node_zorder=sty.NZ,
         edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
     fig.savefig(
             './img/{}-{}-O.{}'.format(idStr, netType, FMT),
+            bbox_inches='tight', pad_inches=.01
+        )
+
+###############################################################################
+# Bearings
+###############################################################################
+G = ox.add_edge_bearings(G)
+bearings = pd.Series([
+        data['bearing'] for u, v, k, data in G.edges(keys=True, data=True)
+    ])
+
+
+(count, division) = np.histogram(
+        bearings,
+        bins=[ang*360/n for ang in range(0,n+1)]
+    )
+(division, width) = (division[0:-1], 2 * np.pi / n)
+(fig, ax) = plt.subplots()
+ax = plt.subplot(111, projection='polar')
+ax.set_theta_zero_location('N')
+ax.set_theta_direction('clockwise')
+bars = ax.bar(
+        division * np.pi/180 - width * 0.5, count,
+        width=width, bottom=0.0
+    )
+if EXPORT:
+    fig.savefig(
+            './img/{}-{}-D.{}'.format(idStr, netType, FMT),
             bbox_inches='tight', pad_inches=.01
         )
 
@@ -95,7 +126,7 @@ nc = fun.get_node_colors_by_stat(
 (fig, ax) = ox.plot_graph(
         G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*.5, node_color=nc, node_zorder=sty.NZ,
+        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
         edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
