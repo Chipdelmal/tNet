@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import style as sty
 import pandas as pd
 import matplotlib.cm as cm
 
 
-def get_color_list(n, color_map='bwr', start=0, end=1):
+def get_color_list(n, color_map=sty.CMAP, start=0, end=1):
     return [cm.get_cmap(color_map)(x) for x in np.linspace(start, end, n)]
 
 

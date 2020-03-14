@@ -7,7 +7,6 @@ import setup as stp
 import style as sty
 import pandas as pd
 import pickle as pkl
-import networkx as nx
 import functions as fun
 import matplotlib.pyplot as plt
 
@@ -19,7 +18,7 @@ print('OSMNXv{}'.format(ox.__version__))
 
 n = 30
 (PLACE, netType, EXPORT, FMT, PTH_BASE) = (
-        'San Francisco, California, USA', 'drive', True,
+        'Orinda, California, USA', 'drive', True,
         stp.FMT, stp.PTH_BASE
     )
 idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
@@ -41,7 +40,8 @@ if EXPORT:
 (fig, ax) = ox.plot_graph(
         G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*2, node_color=sty.NC, node_zorder=sty.NZ,
+        node_size=sty.NS*10, node_color=sty.NC,
+        node_zorder=sty.NZ, node_alpha=.35,
         edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
@@ -61,16 +61,20 @@ bearings = pd.Series([
 
 (count, division) = np.histogram(
         bearings,
-        bins=[ang*360/n for ang in range(0,n+1)]
+        bins=[ang*360/n for ang in range(0, n+1)]
     )
-(division, width) = (division[0:-1], 2 * np.pi / n)
+(division, width) = (division[0:-1], 2*np.pi/n)
 (fig, ax) = plt.subplots()
 ax = plt.subplot(111, projection='polar')
+ax.grid(alpha=.25)
+ax.spines['polar'].set_visible(False)
 ax.set_theta_zero_location('N')
 ax.set_theta_direction('clockwise')
+ax.set_yticklabels([])
+plt.yticks(np.arange(0, 1000, 100))
 bars = ax.bar(
         division * np.pi/180 - width * 0.5, count,
-        width=width, bottom=0.0
+        width=width, bottom=0., ec='k', lw=1, fc=sty.NC
     )
 if EXPORT:
     fig.savefig(
@@ -82,7 +86,7 @@ if EXPORT:
 # Network stats
 ###############################################################################
 stats = ox.basic_stats(G, area=area)
-extended_stats = ox.extended_stats(G, ecc=True, bc=True, cc=True)
+extended_stats = ox.extended_stats(G, bc=True)
 for key, value in extended_stats.items():
     stats[key] = value
 
@@ -102,8 +106,8 @@ nc = fun.get_node_colors_by_stat(
 (fig, ax) = ox.plot_graph(
         G, show=False,
         bgcolor=sty.BKG,
-        node_size=sty.NS*2, node_color=nc, node_zorder=sty.NZ,
-        edge_linewidth=sty.ES/2, edge_color=sty.EC, edge_alpha=sty.EA
+        node_size=sty.NS*10, node_color=nc, node_zorder=sty.NZ, node_alpha=.35,
+        edge_linewidth=sty.ES, edge_color=sty.EC, edge_alpha=sty.EA
     )
 if EXPORT:
     fig.savefig(
