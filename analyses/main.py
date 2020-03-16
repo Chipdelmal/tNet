@@ -18,14 +18,15 @@ print('OSMNXv{}'.format(ox.__version__))
 
 n = 30
 (PLACE, netType, EXPORT, FMT, PTH_BASE) = (
-        'Seattle, Washington, USA', 'drive', True,
+        'Berkeley, California, USA', 'drive', True,
         stp.FMT, stp.PTH_BASE
     )
 idStr = '-'.join([i[:].replace(' ', '') for i in PLACE.split(',')])
+ntwPath = '{}/dta/ntw/{}-{}.pickle'.format(PTH_BASE, idStr, netType)
 ###############################################################################
 # Get Network
 ###############################################################################
-G = ox.graph_from_place(PLACE, netType)
+G = fun.loadNetwork(PLACE, netType, ntwPath, write=True)
 
 ###############################################################################
 # Bearings
